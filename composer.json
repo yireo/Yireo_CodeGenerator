@@ -1,0 +1,22 @@
+{
+  "name": "yireo/magento2-code-generator",
+  "version": "1.0.0",
+  "description": "Code generator for Magento 2",
+  "type": "magento2-module",
+  "require": {
+      "magento/framework": "^101.0.1|^101.1|^102.0|^103.0",
+      "nette/php-generator": "^4.1",
+      "nette/utils": "^4.0"
+  },
+  "license": [
+    "OSL-3.0"
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Yireo\\CodeGenerator\\": ""
+    }
+  }
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Yireo\CodeGenerator\Generator\PhpGeneratorInterface" type="Yireo\CodeGenerator\Generator\PhpGenerator"/>
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="Yireo_CodeGenerator::generate" xsi:type="object">Yireo\CodeGenerator\Console\Command\GenerateCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!--
+    <type name="Yireo\CodeGenerator\Generator\UnitTest\SourceCodeGeneratorListing">
+        <arguments>
+            <argument name="testGenerators" xsi:type="array">
+                <item name="openai" xsi:type="array">
+                    <item name="class_name" xsi:type="string">
+                        Yireo\CodeGenerator\Generator\UnitTest\SourceTest\OpenAiCodeGenerator
+                    </item>
+                    <item name="sort_order" xsi:type="number">100</item>
+                </item>
+                <item name="anthropic" xsi:type="array">
+                    <item name="class_name" xsi:type="string">
+                        Yireo\CodeGenerator\Generator\UnitTest\SourceTest\AnthropicAiCodeGenerator
+                    </item>
+                    <item name="sort_order" xsi:type="number">100</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Yireo\CodeGenerator\Generator\IntegrationTest\SourceCodeGeneratorListing">
+        <arguments>
+            <argument name="testGenerators" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="class_name" xsi:type="string">
+                        Yireo\CodeGenerator\Generator\IntegrationTest\SourceTest\ConfigCodeGenerator
+                    </item>
+                    <item name="sort_order" xsi:type="number">0</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Yireo\CodeGenerator\Generator\IntegrationTest\AdditionalCodeGeneratorListing">
+        <arguments>
+            <argument name="testGenerators" xsi:type="array">
+                <item name="module" xsi:type="object">Yireo\CodeGenerator\Generator\IntegrationTest\AdditionalTest\ModuleCodeGenerator</item>
+            </argument>
+        </arguments>
+    </type>
+    -->
+</config>
