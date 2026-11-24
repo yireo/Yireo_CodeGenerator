@@ -1,5 +1,7 @@
 {
     "module_name": "Yireo_CodeGenerator",
     "composer_name": "yireo/magento2-code-generator",
-    "sequence": []
+    "sequence": [],
+    "phpcs_severity": "9",
+    "phpstan_level": "5"
 }
