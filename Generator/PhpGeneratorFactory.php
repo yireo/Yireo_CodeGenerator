@@ -5,11 +5,12 @@ namespace Yireo\CodeGenerator\Generator;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
-use PHPUnit\Framework\TestCase;
 use Yireo\CodeGenerator\Model\ClassStub;
 
 class PhpGeneratorFactory
 {
+    private const TEST_CASE_CLASS = 'PHPUnit\\Framework\\TestCase';
+
     public function create(ClassStub $classStub): PhpGeneratorInterface
     {
         $className = $classStub->getClassName();
@@ -17,11 +18,11 @@ class PhpGeneratorFactory
 
         $classType = new ClassType($className);
         $classType->setFinal();
-        $classType->setExtends(TestCase::class);
+        $classType->setExtends(self::TEST_CASE_CLASS);
 
         $namespaceType = new PhpNamespace($classNamespace);
         $namespaceType->add($classType);
-        $namespaceType->addUse(TestCase::class);
+        $namespaceType->addUse(self::TEST_CASE_CLASS);
 
         $fileType = new PhpFile;
         $fileType->setStrictTypes();
