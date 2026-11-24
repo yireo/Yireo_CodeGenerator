@@ -2,8 +2,6 @@
 
 namespace Yireo\CodeGenerator\Generator;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
@@ -12,12 +10,6 @@ use Yireo\CodeGenerator\Model\ClassStub;
 
 class PhpGeneratorFactory
 {
-    public function __construct(
-        private DirectoryList $directoryList,
-        private Filesystem $filesystem
-    ) {
-    }
-
     public function create(ClassStub $classStub): PhpGeneratorInterface
     {
         $className = $classStub->getClassName();
@@ -34,8 +26,6 @@ class PhpGeneratorFactory
         $fileType = new PhpFile;
         $fileType->setStrictTypes();
 
-        $writer = $this->filesystem->getDirectoryWrite($this->directoryList::ROOT);
-
-        return new PhpGenerator($classType, $namespaceType, $fileType, $writer);
+        return new PhpGenerator($classType, $namespaceType, $fileType);
     }
 }

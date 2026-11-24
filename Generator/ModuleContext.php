@@ -2,20 +2,25 @@
 
 namespace Yireo\CodeGenerator\Generator;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Filesystem;
+use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
 use RuntimeException;
+use Yireo\CodeGenerator\Model\NameValidator;
 
 class ModuleContext
 {
+    private readonly string $testType;
+
     public function __construct(
-        private ComponentRegistrar $componentRegistrar,
-        private Filesystem $filesystem,
-        private string $moduleName,
-        private string $testType = 'integration',
+        private readonly ComponentRegistrar $componentRegistrar,
+        private readonly WriteFactory $writeFactory,
+        private readonly NameValidator $nameValidator,
+        private readonly string $moduleName,
+        string $testType = 'integration',
     ) {
+        $this->nameValidator->validateModuleName($moduleName);
+        $this->testType = $this->nameValidator->normalizeTestType($testType);
     }
 
     public function getModuleName(): string
@@ -36,28 +41,33 @@ class ModuleContext
 
     public function getTestPath(): string
     {
-        $testPath = $this->getPath().'/Test/Integration/';
-        if (false === $this->getWriter()->isExist($testPath)) {
-            $this->getWriter()->create($testPath);
+        $relativeTestPath = 'Test/'.$this->testType;
+        $moduleDirectory = $this->writeFactory->create($this->getPath());
+        if (false === $moduleDirectory->isExist($relativeTestPath)) {
+            $moduleDirectory->create($relativeTestPath);
         }
 
-        return $testPath;
+        return $this->getPath().'/'.$relativeTestPath.'/';
     }
 
     public function getNamespace(): string
     {
-        $moduleNameParts = explode('_', $this->getModuleName());
-
-        return $moduleNameParts[0].'\\'.$moduleNameParts[1];
+        return str_replace('_', '\\', $this->getModuleName());
     }
 
     public function getTestNamespace(): string
     {
-        return $this->getNamespace().'\\Test\\'.ucfirst($this->testType);
+        return $this->getNamespace().'\\Test\\'.$this->testType;
     }
 
-    public function getWriter(): WriteInterface
+    public function writeTestFile(string $relativeFile, string $contents): void
     {
-        return $this->filesystem->getDirectoryWrite(DirectoryList::ROOT);
+        $this->nameValidator->validateRelativeFile($relativeFile);
+        $this->getTestDirectory()->writeFile($relativeFile, $contents);
+    }
+
+    private function getTestDirectory(): WriteInterface
+    {
+        return $this->writeFactory->create($this->getTestPath());
     }
 }

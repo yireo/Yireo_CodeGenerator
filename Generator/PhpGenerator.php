@@ -2,7 +2,6 @@
 
 namespace Yireo\CodeGenerator\Generator;
 
-use Magento\Framework\Filesystem\Directory\WriteInterface;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
@@ -11,10 +10,9 @@ use Nette\PhpGenerator\PsrPrinter;
 class PhpGenerator implements PhpGeneratorInterface
 {
     public function __construct(
-        private ClassType $classType,
-        private PhpNamespace $namespace,
-        private PhpFile $file,
-        private WriteInterface $writer
+        private readonly ClassType $classType,
+        private readonly PhpNamespace $namespace,
+        private readonly PhpFile $file
     ) {
     }
 
@@ -31,12 +29,13 @@ class PhpGenerator implements PhpGeneratorInterface
     public function addClassMethod(
         string $methodName,
         string $methodBody,
+        ?array $arguments = null,
     ): void {
         $this->getClassType()->addMethod($methodName)
             ->setFinal()
             ->setReturnType('void')
             ->setPublic()
-            ->setBody($methodBody);
+            ->setBody($methodBody, $arguments);
     }
 
     public function addTrait(string $traitName): void
@@ -53,15 +52,6 @@ class PhpGenerator implements PhpGeneratorInterface
     public function addConstant(string $name, string $value): void
     {
         $this->getClassType()->addConstant($name, $value);
-    }
-
-    /**
-     * @deprecated
-     **/
-    public function generate(string $file):bool
-    {
-        $this->writer->writeFile($file, $this->output());
-        return true;
     }
 
     public function output(): string
