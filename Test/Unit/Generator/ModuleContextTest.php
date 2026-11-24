@@ -5,6 +5,7 @@ namespace Yireo\CodeGenerator\Test\Unit\Generator;
 use InvalidArgumentException;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Filesystem\Directory\Write;
+use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\Driver\File as FileDriver;
 use Magento\Framework\Filesystem\File\WriteFactory as FileWriteFactory;
@@ -102,7 +103,7 @@ final class ModuleContextTest extends TestCase
         $writeFactory = $this->createMock(WriteFactory::class);
         $writeFactory->method('create')->willReturnCallback(
             fn (string $path) => new Write(
-                $this->createMock(FileWriteFactory::class),
+                new FileWriteFactory(new DriverPool()),
                 new FileDriver(),
                 $path,
                 0770
