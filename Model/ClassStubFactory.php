@@ -7,7 +7,8 @@ use Magento\Framework\ObjectManagerInterface;
 class ClassStubFactory
 {
     public function __construct(
-        private ObjectManagerInterface $objectManager
+        private readonly ObjectManagerInterface $objectManager,
+        private readonly NameValidator $nameValidator
     ) {
     }
 
@@ -19,17 +20,19 @@ class ClassStubFactory
         ]);
     }
 
-    public function createTest(ClassStub $original, string $type = 'Integration')
+    public function createTest(ClassStub $original, string $type = 'Integration'): ClassStub
     {
-        $type = ucfirst($type);
-        $testClass = $original->getModuleClassPrefix()
-            .'\\Test\\'.$type
-            .'\\'.$original->getRelativeNamespace()
-            .'\\'.$original->getClassName().'Test';
+        $parts = [
+            $original->getModuleClassPrefix(),
+            'Test',
+            $this->nameValidator->normalizeTestType($type),
+            $original->getRelativeNamespace(),
+            $original->getClassName().'Test',
+        ];
 
         return $this->create(
             $original->getModuleName(),
-            $testClass
+            implode('\\', array_filter($parts, fn (string $part) => $part !== ''))
         );
     }
 }
